@@ -12,7 +12,9 @@ class Stashpoint(db.Model):
     __tablename__ = "stashpoints"
 
     id = db.Column(db.String, primary_key=True, default=lambda: uuid.uuid4().hex)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(
+        db.DateTime(timezone=False), nullable=False, default=datetime.utcnow
+    )
 
     # Basic details
     name = db.Column(db.String(255), nullable=False)

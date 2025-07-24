@@ -9,7 +9,9 @@ class Customer(db.Model):
     __tablename__ = "customers"
 
     id = db.Column(db.String, primary_key=True, default=lambda: uuid.uuid4().hex)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(
+        db.DateTime(timezone=False), nullable=False, default=datetime.utcnow
+    )
 
     # Customer details
     email = db.Column(db.String(255), nullable=False, unique=True, index=True)
@@ -26,5 +28,5 @@ class Customer(db.Model):
             "email": self.email,
             "name": self.name,
             "phone": self.phone,
-            "created_at": self.created_at.isoformat(),
+            "created_at": self.created_at.isoformat() + "Z",
         }

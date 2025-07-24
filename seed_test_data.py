@@ -129,7 +129,7 @@ def seed_data():
     print(f"Created {len(customers)} customers")
 
     # Create bookings over a 30-day period
-    today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    today = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
     bookings = []
 
     # Generate 100 bookings with various parameters
@@ -177,12 +177,12 @@ def seed_data():
             is_cancelled=random.choices([True, False], weights=[5, 95], k=1)[0],
             checked_in=(
                 random.choices([True, False], weights=[60, 40], k=1)[0]
-                if dropoff_time < datetime.now()
+                if dropoff_time < datetime.utcnow()
                 else False
             ),
             checked_out=(
                 random.choices([True, False], weights=[40, 60], k=1)[0]
-                if dropoff_time < datetime.now() and pickup_time < datetime.now()
+                if dropoff_time < datetime.utcnow() and pickup_time < datetime.utcnow()
                 else False
             ),
         )
