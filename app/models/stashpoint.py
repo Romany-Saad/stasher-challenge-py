@@ -1,8 +1,7 @@
 import uuid
 from datetime import datetime
 from geoalchemy2.types import Geography
-from sqlalchemy.ext.hybrid import hybrid_method
-from sqlalchemy import func
+from sqlalchemy import Index
 from app import db
 
 
@@ -38,6 +37,10 @@ class Stashpoint(db.Model):
 
     # Relationships
     bookings = db.relationship("Booking", back_populates="stashpoint", lazy="dynamic")
+
+    __table_args__ = (
+        Index("idx_stashpoints_location", "location", postgresql_using="gist"),
+    )
 
     def __init__(self, **kwargs):
         super(Stashpoint, self).__init__(**kwargs)

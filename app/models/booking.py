@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from sqlalchemy import Index
 from app import db
 
 
@@ -15,8 +16,8 @@ class Booking(db.Model):
 
     # Booking details
     bag_count = db.Column(db.Integer, nullable=False, default=1)
-    dropoff_time = db.Column(db.DateTime(timezone=False), nullable=False, index=True)
-    pickup_time = db.Column(db.DateTime(timezone=False), nullable=False, index=True)
+    dropoff_time = db.Column(db.DateTime(timezone=False), nullable=False)
+    pickup_time = db.Column(db.DateTime(timezone=False), nullable=False)
 
     # Status fields
     is_paid = db.Column(db.Boolean, nullable=False, default=False)
@@ -26,7 +27,7 @@ class Booking(db.Model):
 
     # Foreign keys
     stashpoint_id = db.Column(
-        db.String, db.ForeignKey("stashpoints.id"), nullable=False, index=True
+        db.String, db.ForeignKey("stashpoints.id"), nullable=False
     )
     customer_id = db.Column(
         db.String, db.ForeignKey("customers.id"), nullable=False, index=True
@@ -35,6 +36,12 @@ class Booking(db.Model):
     # Relationships
     stashpoint = db.relationship("Stashpoint", back_populates="bookings")
     customer = db.relationship("Customer", back_populates="bookings")
+
+    __table_args__ = (
+        Index(
+            "idx_booking_availability", "stashpoint_id", "dropoff_time", "pickup_time"
+        ),
+    )
 
     def to_dict(self):
         """Convert the model to a dictionary for API responses"""
