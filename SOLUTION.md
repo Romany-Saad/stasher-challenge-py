@@ -19,10 +19,14 @@
    4. Is `pickup_time` actually after `dropoff_time`?
    5. A default configurable value should be set for the optional `radius_km`.
    6. If any validation fails, the endpoint should return a 400 Bad Request with a clear error message.
-6. Add pagination to the endpoint.
 7. Add caching to cache the endpoint responses unless a new reservation is made.
 8. Add API docs.
  
-# Notes
-* Both `days` and `is_active` do not exist on the Booking model and has been removed.
-* Maybe it worth recording the Check In and Check Out times on the Booking model, as it can be important for customer behavior analysis.
+
+## Future Enhancements
+Maybe it worth adding the following enhancements for next iteration in case of a real project:
+* Recording the Check In and Check Out times on the Booking model, as it can be important for customer behavior analysis.
+* Add cursor-based pagination to the endpoint to enable infinite scrolling on the frontend for a seamless user experience.
+
+## Notes
+* Both `days` and `is_active` do not exist on the Booking model and has been removed from the API response (seemed like a bug).
