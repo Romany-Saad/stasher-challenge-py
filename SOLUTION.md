@@ -10,7 +10,10 @@
    2. **Capacity Filtering (Secondary Check):** For each candidate stashpoint from the first step, a second query is performed. This query checks the `Bookings` table to calculate the number of bags already booked during the requested time window. If `stashpoint.capacity - booked_bags >= bag_count`, the stashpoint is included in the final results.
 4. Add testing to the the new method.
 5. Change endpoint signature and add validation:
-   1. Are `lat`, `lng`, `bag_count`, and `radius_km` the correct data types `float`?
+   1. Are `lat`, `lng`, `bag_count`, and `radius_km` the correct data types?
+      1. `radius_km` param should have a default value from config if was null or 0.
+      2. `lat`, `lng`, and `radius_km` should be `float`.
+      3. `bag_count` should be `int`.
    2. Are `lat` and `lng` within their valid geographical ranges?
    3. Are `dropoff_time` and `pickup_time` valid `ISO 8601` datetime strings?
    4. Is `pickup_time` actually after `dropoff_time`?

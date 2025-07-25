@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from geoalchemy2.types import Geography
-from sqlalchemy import Index
+from sqlalchemy import Index, event
 from app import db
 
 
@@ -26,7 +26,9 @@ class Stashpoint(db.Model):
     longitude = db.Column(db.Float, nullable=False)
 
     # Spatial column for optimized geo queries
-    location = db.Column(Geography(geometry_type="POINT", srid=4326))
+    location = db.Column(
+        Geography(geometry_type="POINT", srid=4326, spatial_index=False)
+    )
 
     # Storage details
     capacity = db.Column(db.Integer, nullable=False)
@@ -41,13 +43,6 @@ class Stashpoint(db.Model):
     __table_args__ = (
         Index("idx_stashpoints_location", "location", postgresql_using="gist"),
     )
-
-    def __init__(self, **kwargs):
-        super(Stashpoint, self).__init__(**kwargs)
-        # Set the location from latitude and longitude
-        if "latitude" in kwargs and "longitude" in kwargs:
-            point_wkt = f'POINT({kwargs["longitude"]} {kwargs["latitude"]})'
-            self.location = point_wkt
 
     def to_dict(self):
         """Convert the model to a dictionary for API responses"""
@@ -65,3 +60,11 @@ class Stashpoint(db.Model):
                 self.open_until.strftime("%H:%M") if self.open_until else None
             ),
         }
+
+
+@event.listens_for(Stashpoint, "before_insert")
+@event.listens_for(Stashpoint, "before_update")
+def set_location_from_lat_lng(mapper, connection, target):
+    """Automatically update the `location` geography point from lat/lng."""
+    if target.latitude is not None and target.longitude is not None:
+        target.location = f"POINT({target.longitude} {target.latitude})"

@@ -15,21 +15,12 @@ services:
       - .:/app
     command: >
       sh -c "
-        # Wait for db to be ready using a reliable approach
-        echo 'Waiting for PostgreSQL to be ready...'
+        echo 'Waiting for PostgreSQL...'
         while ! pg_isready -h db -p 5432 -U postgres; do
           sleep 1
         done
-        sleep 2
-        
-        # Handle migrations properly
-        rm -rf migrations &&
-        flask db init &&
-        
-        # Run the application directly - let it create tables
-        python -c 'from app import create_app, db; app = create_app(); app.app_context().push(); db.create_all()' &&
-        
-        # Run the application
+        echo 'PostgreSQL started'
+        flask db upgrade &&
         flask run --host=0.0.0.0
       "
 
@@ -43,16 +34,19 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init-test-db.sh:/docker-entrypoint-initdb.d/init-test-db.sh
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
-    command: >
-      postgres
-        -c shared_preload_libraries=pg_stat_statements
-        -c pg_stat_statements.track=all
+    command:
+      - "postgres"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "pg_stat_statements.track=all"
 
 volumes:
   postgres_data:
-    name: stasher_interview_postgres_data 
+    name: stasher_interview_postgres_data
