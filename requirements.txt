@@ -6,4 +6,5 @@ python-dotenv==1.0.0
 pytest==7.4.3
 geoalchemy2==0.14.2
 psycopg2-binary==2.9.9
-pytz==2023.3 
+pytz==2023.3
+flask-smorest

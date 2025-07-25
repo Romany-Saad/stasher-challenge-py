@@ -1,5 +1,18 @@
-# Solution steps
+# Design Overview
+* Added a separate service to isolate the business logic from API concerns.
+  * API layer does input validation, serialization and deserialization from and to HTTP & JSON.
+  * BL layer does handle the actual use case logic handling all the search params.
+* Added a test suite to cover all the cases for the new service.
+* Added multiple indexes to enhance the DB performance.
+* API Documentation are added (http://localhost:5000/swagger-ui).
 
+## Notes
+
+- Renamed the request query params to `dropoff_time` and `pickup_time` instead of `dropoff` and `pickup` for more clarity.
+- Both `days` and `is_active` do not exist on the Booking model and has been removed from the API response (seemed like a bug).
+
+# Solution
+The solution is broken down into the following steps, which each was committed into a separate commit for easier review.
 1. Convert both `dropoff_time` and `pickup_time` on the `Booking` model to `timestamps` without timezone instead of `datetime`s which includes timezone to escape the timezone conversion hell for a simplified and more performant queries.
 2. Add the needed indexes to enhance DB performance on the related queries:
    1. Add a new index to the `location` column on the `Stashpoint` model.
@@ -20,14 +33,11 @@
    4. Is `pickup_time` actually after `dropoff_time`?
    5. A default configurable value should be set for the optional `radius_km`.
    6. If any validation fails, the endpoint should return a 400 Bad Request with a clear error message.
-6. Add API docs.
+6. Add OpenAPI docs using `flask-smorest`.
 
-## Notes
 
-- Renamed the request query params to `dropoff_time` and `pickup_time` instead of `dropoff` and `pickup` for more clarity.
-- Both `days` and `is_active` do not exist on the Booking model and has been removed from the API response (seemed like a bug).
 
-## Future Enhancements
+## Further Enhancements
 
 Maybe it worth adding the following enhancements for next iteration in case of a real project:
 

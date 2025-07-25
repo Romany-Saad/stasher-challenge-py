@@ -1,3 +1,7 @@
+# ⚡ ⚡ ⚡
+## To keep this document intact, solution docs were added [here](SOLUTION.md). 
+# ⚡ ⚡ ⚡ 
+
 # Stasher Backend Interview Challenge
 
 Welcome to the Stasher backend interview challenge! This project is a simplified version of our bag storage platform, where travelers can find locations to store their luggage.
